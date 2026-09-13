@@ -5,6 +5,8 @@ import com.example.market.model.entity.Usuario;
 import com.example.market.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioService {
 
@@ -12,6 +14,10 @@ public class UsuarioService {
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
+    }
+
+    public List<Usuario> listar() {
+        return usuarioRepository.findAll();
     }
 
     public Usuario cadastrar(Usuario usuario) {
