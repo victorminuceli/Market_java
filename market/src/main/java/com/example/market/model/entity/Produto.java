@@ -25,11 +25,17 @@ public class Produto {
     private String nome;
 
     @NotNull(message = "Preço é obrigatório")
-    @DecimalMin(value = "0.01", message = "Preço deve ser maior que zero")
+    @DecimalMin(
+            value = "0.01",
+            message = "Preço deve ser maior que zero"
+    )
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
     @NotBlank(message = "Categoria é obrigatória")
     @Column(nullable = false)
     private String categoria;
+
+    @Column(name = "imagem_url", length = 500)
+    private String imagemUrl;
 }
