@@ -1,9 +1,11 @@
 package com.example.market.service;
 
+import com.example.market.dto.AtualizacaoUsuario;
 import com.example.market.model.entity.Carrinho;
 import com.example.market.model.entity.Usuario;
 import com.example.market.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,7 +23,6 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(Usuario usuario) {
-
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }
@@ -34,9 +35,10 @@ public class UsuarioService {
     }
 
     public Usuario login(String email, String senha) {
-
         Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email ou senha inválidos"));
+                .orElseThrow(
+                        () -> new RuntimeException("Email ou senha inválidos")
+                );
 
         if (!usuario.getSenha().equals(senha)) {
             throw new RuntimeException("Email ou senha inválidos");
@@ -46,29 +48,33 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorId(Long id) {
-
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(
+                        () -> new RuntimeException("Usuário não encontrado")
+                );
     }
 
-    public Usuario atualizar(Long id, Usuario dados) {
-
+    @Transactional
+    public Usuario atualizar(Long id, AtualizacaoUsuario dados) {
         Usuario usuario = buscarPorId(id);
 
-        if (!usuario.getEmail().equals(dados.getEmail())
-                && usuarioRepository.findByEmail(dados.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
-        }
+        usuarioRepository.findByEmail(dados.email())
+                .filter(outroUsuario -> !outroUsuario.getId().equals(id))
+                .ifPresent(outroUsuario -> {
+                    throw new RuntimeException("Email já cadastrado");
+                });
 
-        usuario.setNome(dados.getNome());
-        usuario.setEmail(dados.getEmail());
-        usuario.setSenha(dados.getSenha());
+        usuario.setNome(dados.nome());
+        usuario.setEmail(dados.email());
+
+        if (dados.senha() != null) {
+            usuario.setSenha(dados.senha());
+        }
 
         return usuarioRepository.save(usuario);
     }
 
     public void excluir(Long id) {
-
         Usuario usuario = buscarPorId(id);
 
         usuarioRepository.delete(usuario);

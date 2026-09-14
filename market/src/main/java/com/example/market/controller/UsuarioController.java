@@ -1,5 +1,6 @@
 package com.example.market.controller;
 
+import com.example.market.dto.AtualizacaoUsuario;
 import com.example.market.model.entity.Usuario;
 import com.example.market.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -18,10 +19,8 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    // Endpoint mantido para fins acadêmicos, permitindo demonstrar a consulta geral de usuários.
     @GetMapping
     public ResponseEntity<List<Usuario>> listar() {
-
         return ResponseEntity.ok(
                 usuarioService.listar()
         );
@@ -60,10 +59,10 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> atualizar(
             @PathVariable("id") Long id,
-            @Valid @RequestBody Usuario usuario) {
+            @Valid @RequestBody AtualizacaoUsuario dados) {
 
         return ResponseEntity.ok(
-                usuarioService.atualizar(id, usuario)
+                usuarioService.atualizar(id, dados)
         );
     }
 
