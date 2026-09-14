@@ -1,3 +1,7 @@
+-- Carga inicial dos produtos do Market.
+-- Como esta carga é automatizada, os produtos definidos neste arquivo
+-- podem ser inseridos novamente caso sejam excluídos e o backend seja executado novamente.
+
 INSERT IGNORE INTO produtos
 (id, categoria, nome, preco, imagem_url)
 VALUES
